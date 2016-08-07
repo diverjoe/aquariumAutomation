@@ -11,13 +11,16 @@ ThePlantedTank.net thread where I'll post updates: http://www.plantedtank.net/fo
 * Data gathering/analysis
 * Alerting/notifying via SMS/email
 
+## Latest diagram...
+![Alt text](/drawIO/Aquarium.png?raw=true "Latest diagram...")
+
 ## Some benefits
 * Obviously cost (to a degree) is always a problem.  Any existing systems that give this level of reliability/featureset cost many thousands.
 * This system will be designed to be modular/growable/optionally-redundant
 * The DIY crowd can have a ton of fun with this - it's open source, community-grown (well, that's the idea)
 * This can be as baller or spartan as you want
 * I am hoping that we can generate a library of sensor calibration code so in future it'll be a more plug-n-play build process
- 
+
 ## Some drawbacks
 * I have no idea what I'm doing
 * It will be a LOT of work to build this on your own
