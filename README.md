@@ -3,7 +3,6 @@ The goal of this repo is to be home for both the technical documents (diagrams/s
 ThePlantedTank.net thread where I'll post updates: http://www.plantedtank.net/forums/20-diy/1069681-full-tank-automation-system.html
 
 ## Some systems we'll be working to automate:
-Water
 * Water change & top-off
 * Automated temperature control
 * PWM digital control of LED lighting
