@@ -1,5 +1,5 @@
 # aquariumAutomation
-The goal of this repo is to be home for both the technical documents (diagrams/schematics/bill-of-materials) and the (Arduino|RaspberryPi) code to run a fully automatic freshwater aquarium.
+The goal of this repo is to be home for both the technical documents (diagrams/schematics/bill-of-materials) and the Arduino code to run a fully automatic freshwater aquarium.
 ThePlantedTank.net thread where I'll post updates: http://www.plantedtank.net/forums/20-diy/1069681-full-tank-automation-system.html
 
 ## Some systems we'll be working to automate:
@@ -37,3 +37,4 @@ Electrial system schematic.
 Sensors, relays, controller pieces, etc.
 
 # Controller code
+Arduino code (read up on this, seems Arduino is preferred for analog sensor/mechanical systems).
