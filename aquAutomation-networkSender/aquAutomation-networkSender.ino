@@ -1,46 +1,99 @@
 /*
-  DigitalReadSerial
- Reads a digital input on pin 2, prints the result to the serial monitor
+Contributions:
+Web Server example
 
- This example code is in the public domain.
+This requires the W5500 ethernet chipset.
+
  */
 
-#include <SPI.h>         // needed for Arduino versions later than 0018
-#include <Ethernet.h>
-#include <EthernetUdp.h>         // UDP library from: bjoern@cs.stanford.edu 12/30/2008
+#include <SPI.h>
+#include <Ethernet2.h>
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
 byte mac[] = {
   0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
 };
-IPAddress ip(192, 168, 1, 177);
+char targetServer[] = "data.practicaltech.ca";
 
-unsigned int localPort = 8888;      // local port to listen on
+EthernetClient client;
 
-// buffers for receiving and sending data
-char packetBuffer[UDP_TX_PACKET_MAX_SIZE];  //buffer to hold incoming packet,
-char  ReplyBuffer[] = "acknowledged";       // a string to send back
-
-// An EthernetUDP instance to let us send and receive packets over UDP
-EthernetUDP Udp;
-
-// digital pin 2 has a pushbutton attached to it. Give it a name:
-int pushButton = 2;
-
-// the setup routine runs once when you press reset:
 void setup() {
-  // initialize serial communication at 9600 bits per second:
+  // Open serial communications and wait for port to open:
   Serial.begin(9600);
-  // make the pushbutton's pin an input:
-  pinMode(pushButton, INPUT);
+  // this check is only needed on the Leonardo:
+  while (!Serial) {
+    ; // wait for serial port to connect. Needed for native USB port only
+  }
+
+  // start the Ethernet connection:
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println("Failed to configure Ethernet using DHCP");
+    // no point in carrying on, so do nothing forevermore:
+    for (;;)
+      ;
+  }
+  // if you get a connection, report back via serial:
+  if (client.connect(server, 80)) {
+    Serial.println("connected");
+    // Make a HTTP request:
+    client.println("GET /search?q=arduino HTTP/1.1");
+    client.println("Host: www.google.com");
+    client.println("Connection: close");
+    client.println();
+  } else {
+    // if you didn't get a connection to the server:
+    Serial.println("connection failed");
+  }
 }
 
-// the loop routine runs over and over again forever:
 void loop() {
-  // read the input pin:
-  int buttonState = digitalRead(pushButton);
-  // print out the state of the button:
-  Serial.println(buttonState);
-  delay(1);        // delay in between reads for stability
+
+  switch (Ethernet.maintain())
+  {
+    case 1:
+      //renewed fail
+      Serial.println("Error: renewed fail");
+      break;
+
+    case 2:
+      //renewed success
+      Serial.println("Renewed success");
+
+      //print your local IP address:
+      printIPAddress();
+      break;
+
+    case 3:
+      //rebind fail
+      Serial.println("Error: rebind fail");
+      break;
+
+    case 4:
+      //rebind success
+      Serial.println("Rebind success");
+
+      //print your local IP address:
+      printIPAddress();
+      break;
+
+    default:
+      //nothing happened
+      break;
+
+  }
 }
+
+void printIPAddress()
+{
+  Serial.print("My IP address: ");
+  for (byte thisByte = 0; thisByte < 4; thisByte++) {
+    // print the value of each byte of the IP address:
+    Serial.print(Ethernet.localIP()[thisByte], DEC);
+    Serial.print(".");
+  }
+
+  Serial.println();
+}
+
+
