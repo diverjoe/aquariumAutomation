@@ -14,86 +14,57 @@ This requires the W5500 ethernet chipset.
 byte mac[] = {
   0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
 };
-char targetServer[] = "data.practicaltech.ca";
-
+// char targetServer[] = "data.practicaltech.ca";
+byte server[] = { 192, 168, 1, 140 };
 EthernetClient client;
 
-void setup() {
-  // Open serial communications and wait for port to open:
-  Serial.begin(9600);
-  // this check is only needed on the Leonardo:
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
+String PostData;
 
-  // start the Ethernet connection:
-  if (Ethernet.begin(mac) == 0) {
-    Serial.println("Failed to configure Ethernet using DHCP");
-    // no point in carrying on, so do nothing forevermore:
-    for (;;)
-      ;
-  }
-  // if you get a connection, report back via serial:
-  if (client.connect(server, 80)) {
-    Serial.println("connected");
-    // Make a HTTP request:
-    client.println("GET /search?q=arduino HTTP/1.1");
-    client.println("Host: www.google.com");
-    client.println("Connection: close");
-    client.println();
-  } else {
-    // if you didn't get a connection to the server:
-    Serial.println("connection failed");
-  }
+void setup() {
+	// Open serial communications and wait for port to open:
+	Serial.begin(9600);
+  Serial.println("Attempting to configure Ethernet using DHCP...");
+  Ethernet.begin(mac);
+
+  delay(1000);
+  
+	// start the Ethernet connection:
+	if (Ethernet.begin(mac) == 0) {
+		Serial.println("Failed to configure Ethernet using DHCP!!");
+		// no point in carrying on, so do nothing forevermore:
+		for (;;)
+			;
+	}
+	// if you get a connection, report back via serial:
+  Serial.println("Successfully configured Ethernet using DHCP...");
+
+  PostData = "";
 }
 
 void loop() {
-
-  switch (Ethernet.maintain())
-  {
-    case 1:
-      //renewed fail
-      Serial.println("Error: renewed fail");
-      break;
-
-    case 2:
-      //renewed success
-      Serial.println("Renewed success");
-
-      //print your local IP address:
-      printIPAddress();
-      break;
-
-    case 3:
-      //rebind fail
-      Serial.println("Error: rebind fail");
-      break;
-
-    case 4:
-      //rebind success
-      Serial.println("Rebind success");
-
-      //print your local IP address:
-      printIPAddress();
-      break;
-
-    default:
-      //nothing happened
-      break;
-
-  }
-}
-
-void printIPAddress()
-{
-  Serial.print("My IP address: ");
-  for (byte thisByte = 0; thisByte < 4; thisByte++) {
-    // print the value of each byte of the IP address:
-    Serial.print(Ethernet.localIP()[thisByte], DEC);
-    Serial.print(".");
+  PostData = "{ \"dataType\":\"SensorData\",\"sourceDevice\":\"Arduino-1\",\"sensorName\":\"tempProbe-1\",\"sensorData\":22,\"dataScale\":\"celcius\" }";
+  
+  if (client.connect(server, 3000)) {
+    Serial.println("connected");
+    // Make a HTTP request:
+    client.println("POST /receiveSensorData HTTP/1.1");
+    client.println("Host: data.practicaltech.ca");
+    client.println("Connection: close");
+    client.println("Content-Type: application/json;charset=utf-8");
+	  client.print("Content-Length: ");
+	  client.println(PostData.length());
+	  client.println();
+	  client.print(PostData);
+  } 
+  else {
+    // if you didn't get a connection to the server:
+    Serial.println("connection failed");
   }
 
-  Serial.println();
+	if (client.connected()) {
+    Serial.println("disconnecting");
+    client.stop();
+	}
+
+  delay(15000);
 }
-
-
