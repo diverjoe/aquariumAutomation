@@ -9,16 +9,22 @@ This requires the W5500 ethernet chipset.
 #include <SPI.h>
 #include <Ethernet2.h>
 
-// Enter a MAC address and IP address for your controller below.
-// The IP address will be dependent on your local network:
+// Enter a MAC address for your controller below.
+// These must be unique per local area network!!
 byte mac[] = {
   0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
 };
-// char targetServer[] = "data.practicaltech.ca";
-byte server[] = { 192, 168, 1, 140 };
-EthernetClient client;
 
-String PostData;
+// Define PostData pieces
+String dataType; // The InfluxDB DB name
+String sourceDevice; // The hostname of the arduino
+String sensorName; // The sensor name-id sending the data
+int sensorData = 0; // The data piece, int - analog pin 2
+int potPin = 2; // The data piece, int - analog pin 2
+String dataScale; // Relevant scale, not sure how useful this is
+String PostData; // Defining the post JSON body
+
+EthernetClient client;
 
 void setup() {
 	// Open serial communications and wait for port to open:
@@ -38,14 +44,22 @@ void setup() {
 	// if you get a connection, report back via serial:
   Serial.println("Successfully configured Ethernet using DHCP...");
 
+  
+  dataType = "SensorData";
+  sourceDevice = "Arduino-2";
+  sensorName = "tempProbe-2";
+  // sensorData = (int) sensorPackage.readSensor();
+  dataScale = "celcius";
+
   PostData = "";
 }
 
 void loop() {
-  PostData = "{ \"dataType\":\"SensorData\",\"sourceDevice\":\"Arduino-1\",\"sensorName\":\"tempProbe-1\",\"sensorData\":22,\"dataScale\":\"celcius\" }";
-  
-  if (client.connect(server, 3000)) {
-    Serial.println("connected");
+  sensorData = analogRead(potPin);
+  PostData = "{ \"dataType\":\"" + dataType + "\",\"sourceDevice\":\"" + sourceDevice + "\",\"sensorName\":\"" + sensorName + "\",\"sensorData\":" + sensorData + ",\"dataScale\":\"" + dataScale + "\" }";
+ 
+  if (client.connect("data.practicaltech.ca", 3000)) {
+    // Debug: Serial.println("connected");
     // Make a HTTP request:
     client.println("POST /receiveSensorData HTTP/1.1");
     client.println("Host: data.practicaltech.ca");
@@ -62,7 +76,7 @@ void loop() {
   }
 
 	if (client.connected()) {
-    Serial.println("disconnecting");
+    // Debug: Serial.println("disconnecting");
     client.stop();
 	}
 
