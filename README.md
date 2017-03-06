@@ -1,8 +1,31 @@
-# aquariumAutomation
-The goal of this repo is to be home for both the technical documents (diagrams/schematics/bill-of-materials) and the Arduino code to run a fully automatic freshwater aquarium.
+# What are we about?
+This project's vision is to enable folks to enjoy their aquariums by creating an easy to use automation platform on which the community can add/update modules.  
+
+The code and documentation are to be 100% open-source.  Submissions are to be done via Pull Requests so we can ensure consistency.  
+
+No decision on license yet, but if you wish to use this as a foundation for a business, go ahead!  As a responsible citizen you would, of course, contribute back in the same manner with which this project was given.  Right? :)
+
+## Terminology
+* Sensor package - A sensor/actuator sub-system run by a microcontroller; input/output conforms to data standards.
+* Data standards - TBD, but essentially a way of ensuring that the system remains easy to customize/add to.  e.g. JSON formats for input/output data, keepalive data.  e.g. the format of a submitted sensor package.
+
+## Planned features:
+* Node-red building system
+* Pluggable architecture (pick the sensor packages you want to use)
+* Communication to the outside world
+* Dashboard system (Grafana?  something else?)
+
 ThePlantedTank.net thread where I'll post updates: http://www.plantedtank.net/forums/20-diy/1069681-full-tank-automation-system.html
 
-## Some systems we'll be working to automate:
+# What we are not
+As of now, the project's border stops at MQTT.  Eventually we hope to also provide schematics/BOMs/Arduino code/etc for the sensor packages. 
+
+As a consumer of this system, you would be responsible for:
+* Building the sensor packages 
+* Ensuring your sensor packages follow the standards laid out here (e.g. JSON format)
+* Ensuring your sensor packages can communicate with the core system
+
+# Some systems we'll be working to automate:
 * Water change & top-off
 * Automated temperature control
 * PWM digital control of LED lighting
@@ -11,30 +34,5 @@ ThePlantedTank.net thread where I'll post updates: http://www.plantedtank.net/fo
 * Data gathering/analysis
 * Alerting/notifying via SMS/email
 
-## Latest diagram...
+# Latest diagram...
 ![Alt text](/drawIO/Aquarium.png?raw=true "Latest diagram...")
-
-## Some benefits
-* Obviously cost (to a degree) is always a problem.  Any existing systems that give this level of reliability/featureset cost many thousands.
-* This system will be designed to be modular/growable/optionally-redundant
-* The DIY crowd can have a ton of fun with this - it's open source, community-grown (well, that's the idea)
-* This can be as baller or spartan as you want
-* I am hoping that we can generate a library of sensor calibration code so in future it'll be a more plug-n-play build process
-
-## Some drawbacks
-* I have no idea what I'm doing
-* It will be a LOT of work to build this on your own
-* Won't be as polished as stuff like Neptune and whatnot
-* One of the key tenets is 'use cheap stuff, but make it redundant', so we'll have to make it easy to maintain
-
-# Diagrams
-Systems diagrams (draw.io)
-
-# Schematics
-Electrial system schematic.
-
-# Bill of Materials
-Sensors, relays, controller pieces, etc.
-
-# Controller code
-Arduino code (read up on this, seems Arduino is preferred for analog sensor/mechanical systems).
