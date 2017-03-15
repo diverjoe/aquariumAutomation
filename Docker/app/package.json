@@ -1,0 +1,29 @@
+{
+  "name": "aquautoserver",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "influx": "^5.0.0-alpha.4"
+  },
+  "description": "node.js server for dropping sensor data",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/christrotter/aquAuto-Server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/christrotter/aquAuto-Server/issues"
+  },
+  "homepage": "https://github.com/christrotter/aquAuto-Server#readme",
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}

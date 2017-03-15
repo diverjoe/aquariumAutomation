@@ -1,0 +1,42 @@
+version: '2'
+
+services:
+  influxdb:
+    build: influxdb/
+    ports:
+      - "8086:8086"
+      - "8083:8083"
+    volumes:
+      - ./influxdb/var/lib/influxdb/:/var/lib/influxdb/
+    environment:
+      - DOMAIN_NAME=practicaltech.ca
+      - INFLUXDB_CONFIG_PATH=/var/lib/influxdb/influxdb.conf
+  node-red-docker:
+    build: node-red-docker/
+    ports:
+      - "1880:1880"
+    volumes:
+      - node_red_data:/data/
+    environment:
+      - DOMAIN_NAME=practicaltech.ca
+    depends_on:
+      - docker-mosquitto
+  docker-mosquitto:
+    build: docker-mosquitto/
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./docker-mosquitto/config/:/config/
+    environment:
+      - DOMAIN_NAME=practicaltech.ca
+  app:
+    build: app/
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app/:/app/
+    depends_on:
+      - influxdb
+volumes:
+  node_red_data:

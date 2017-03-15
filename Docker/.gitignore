@@ -1,0 +1,4 @@
+app/node_modules
+influxdb/var/lib/influxdb/wal
+influxdb/var/lib/influxdb/meta
+influxdb/var/lib/influxdb/data

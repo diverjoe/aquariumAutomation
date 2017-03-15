@@ -1,0 +1,7 @@
+apps:
+  - script : server.js
+    name   : 'server'
+    instances: 1
+    watch  : true
+    env    :
+      NODE_ENV: development
