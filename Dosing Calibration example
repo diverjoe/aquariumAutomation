@@ -1,0 +1,346 @@
+[
+    {
+        "id": "91886bbc.383658",
+        "type": "function",
+        "z": "9d369813.62c968",
+        "name": "Time Math",
+        "func": "\nvar value  = context.get('value') || 10;\n\nif (msg.topic == \"value\")\n{\n  value = msg.payload * 1000;\n  context.set('value',value); \n  flow.set('pumpSecs', msg.payload);\n}\n\nelse if (msg.topic == \"start\")\n{\n\nvar timer = setTimeout(function(){msg.payload = \"now\";node.send([msg,{ payload: \"Done\" }]);var countdownstop  = context.get('countdown');clearInterval(countdownstop)},value);\ncontext.set('timer',timer); \n\nvar count = value/1000;\n//count = count -1 ;\nmsg.payload=count;\nnode.send([null,msg]);\nvar countdown = setInterval(function() {count=count-1;msg.payload=count; node.send([null,msg]) }, 1000);\ncontext.set('countdown',countdown);\n\n}\n\nelse if (msg.topic == \"stop\")\n{\nvar timerstop  = context.get('timer')\nclearTimeout(timerstop);\n\nvar countdownstop  = context.get('countdown')\nclearInterval(countdownstop);\n\n}\n\n\n",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 810,
+        "y": 177.81875610351562,
+        "wires": [
+            [
+                "967f67ea.697418"
+            ],
+            [
+                "ab8d9844.034168"
+            ]
+        ]
+    },
+    {
+        "id": "967f67ea.697418",
+        "type": "debug",
+        "z": "9d369813.62c968",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 997.8900146484375,
+        "y": 135.44873046875,
+        "wires": []
+    },
+    {
+        "id": "5e72f2ca.6c202c",
+        "type": "ui_button",
+        "z": "9d369813.62c968",
+        "name": "",
+        "group": "b1bcd85f.5a66b8",
+        "order": 4,
+        "width": "3",
+        "height": "1",
+        "label": "Start",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "start",
+        "x": 570,
+        "y": 157.81875610351562,
+        "wires": [
+            [
+                "91886bbc.383658"
+            ]
+        ]
+    },
+    {
+        "id": "f8e66795.34e7a8",
+        "type": "ui_numeric",
+        "z": "9d369813.62c968",
+        "name": "",
+        "label": "Seconds",
+        "group": "b1bcd85f.5a66b8",
+        "order": 2,
+        "width": "4",
+        "height": "1",
+        "passthru": true,
+        "topic": "value",
+        "format": "{{value}}",
+        "min": "1",
+        "max": "120",
+        "step": 1,
+        "x": 560,
+        "y": 240,
+        "wires": [
+            [
+                "91886bbc.383658"
+            ]
+        ]
+    },
+    {
+        "id": "be5fe7c4.35fa28",
+        "type": "ui_button",
+        "z": "9d369813.62c968",
+        "name": "",
+        "group": "b1bcd85f.5a66b8",
+        "order": 9,
+        "width": "3",
+        "height": "1",
+        "label": "Stop",
+        "color": "",
+        "bgcolor": "",
+        "icon": "fa-hand-stop-o",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "stop",
+        "x": 570,
+        "y": 197.81875610351562,
+        "wires": [
+            [
+                "91886bbc.383658"
+            ]
+        ]
+    },
+    {
+        "id": "ab8d9844.034168",
+        "type": "ui_text",
+        "z": "9d369813.62c968",
+        "group": "b1bcd85f.5a66b8",
+        "order": 3,
+        "width": "4",
+        "height": "1",
+        "name": "",
+        "label": "Secs Remaining",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 1013.693115234375,
+        "y": 207.70172119140625,
+        "wires": []
+    },
+    {
+        "id": "1a09e97e.776027",
+        "type": "link in",
+        "z": "9d369813.62c968",
+        "name": "pumpName",
+        "links": [
+            "de073388.ff433"
+        ],
+        "x": 255,
+        "y": 700,
+        "wires": [
+            [
+                "647a16e4.669978"
+            ]
+        ]
+    },
+    {
+        "id": "6c2b6523.9850dc",
+        "type": "ui_text_input",
+        "z": "9d369813.62c968",
+        "name": "Results (ml)",
+        "label": "Result (ml)",
+        "group": "b1bcd85f.5a66b8",
+        "order": 5,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "mode": "text",
+        "delay": "100",
+        "topic": "ml",
+        "x": 250,
+        "y": 360,
+        "wires": [
+            [
+                "9f73369f.bb7238"
+            ]
+        ]
+    },
+    {
+        "id": "9f73369f.bb7238",
+        "type": "function",
+        "z": "9d369813.62c968",
+        "name": "Set Flow Var",
+        "func": "var ml = msg.payload;\nvar secs = flow.get('pumpSecs');\n\nmsg.payload = (ml / secs);\nflow.set('flowRate', msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 530,
+        "y": 360,
+        "wires": [
+            [
+                "dbd29da.d613a6",
+                "4be90e48.d045a"
+            ]
+        ]
+    },
+    {
+        "id": "4be90e48.d045a",
+        "type": "debug",
+        "z": "9d369813.62c968",
+        "name": "ml",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 870,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "1af9fce4.d030c3",
+        "type": "ui_template",
+        "z": "9d369813.62c968",
+        "group": "b1bcd85f.5a66b8",
+        "name": "",
+        "order": 8,
+        "width": "2",
+        "height": "1",
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "x": 240,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "58449b54.0c6974",
+        "type": "ui_text",
+        "z": "9d369813.62c968",
+        "group": "b1bcd85f.5a66b8",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Old Rate",
+        "format": "{{msg.payload}} ml/s",
+        "layout": "row-left",
+        "x": 240,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "dbd29da.d613a6",
+        "type": "ui_text",
+        "z": "9d369813.62c968",
+        "group": "b1bcd85f.5a66b8",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "New Rate",
+        "format": "{{msg.payload}} ml/s",
+        "layout": "row-left",
+        "x": 400,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "b402bdfa.d5079",
+        "type": "ui_button",
+        "z": "9d369813.62c968",
+        "name": "",
+        "group": "b1bcd85f.5a66b8",
+        "order": 10,
+        "width": "3",
+        "height": "1",
+        "label": "Saveit",
+        "color": "white",
+        "bgcolor": "",
+        "icon": "fa-save",
+        "payload": "1",
+        "payloadType": "num",
+        "topic": "",
+        "x": 590,
+        "y": 540,
+        "wires": [
+            [
+                "78626221.590ddc"
+            ]
+        ]
+    },
+    {
+        "id": "78626221.590ddc",
+        "type": "function",
+        "z": "9d369813.62c968",
+        "name": "Gather up parts",
+        "func": "if (msg.topic === \"pumpName\")\n   {\n       flow.set(\"pumpName\", msg.payload);\n   }\n   \n//var value = context.get('value');  \nvar flowRate = flow.get('flowRate');\nvar pumpSelection = flow.get('pumpName');\n\nmsg.payload = pumpSelection + '::' + flowRate;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 817.7115478515625,
+        "y": 540.9154357910156,
+        "wires": [
+            [
+                "a8701a51.eb5168"
+            ]
+        ]
+    },
+    {
+        "id": "a8701a51.eb5168",
+        "type": "debug",
+        "z": "9d369813.62c968",
+        "name": "Parts",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 1030,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "647a16e4.669978",
+        "type": "ui_dropdown",
+        "z": "9d369813.62c968",
+        "name": "Dosing Pump",
+        "label": "Dosing Pump",
+        "group": "b1bcd85f.5a66b8",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "options": [
+            {
+                "label": "Macro",
+                "value": "Macro",
+                "type": "str"
+            },
+            {
+                "label": "Micro",
+                "value": "Micro",
+                "type": "str"
+            },
+            {
+                "label": "Excel",
+                "value": "Excel",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "pumpName",
+        "x": 470,
+        "y": 700,
+        "wires": [
+            [
+                "78626221.590ddc"
+            ]
+        ]
+    },
+    {
+        "id": "b1bcd85f.5a66b8",
+        "type": "ui_group",
+        "z": "",
+        "name": "Dosing Pumps",
+        "tab": "4604e2ca.52032c",
+        "order": 1,
+        "disp": true,
+        "width": "8"
+    },
+    {
+        "id": "4604e2ca.52032c",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Calibration",
+        "icon": "dashboard",
+        "order": 9
+    }
+]
